@@ -13,12 +13,12 @@
     </li>
 
     <li class="dropdown">
-        <a href="" class="dropdown-toggle no-arrow {{ (request()->is('suppliers*')) ? 'active' : '' }}">
+        <a href="{{ route('suppliers')}}" class="dropdown-toggle no-arrow {{ (request()->is('suppliers*')) ? 'active' : '' }}">
             <span class="micon fa fa-users"></span><span class="mtext">Suppliers</span>
         </a>
     </li>
     <li class="dropdown">
-        <a href="" class="dropdown-toggle no-arrow {{ (request()->is('orders*')) ? 'active' : '' }}">
+        <a href="{{ route('orders')}}" class="dropdown-toggle no-arrow {{ (request()->is('orders*')) ? 'active' : '' }}">
             <span class="micon icon-copy ti-shopping-cart-full"></span><span class="mtext">Orders</span>
         </a>
     </li>

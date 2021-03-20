@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Log;
+use Auth;
 
 class ProductController extends Controller
 {
@@ -24,6 +26,7 @@ class ProductController extends Controller
             $products = Product::orderByDesc('id')->paginate(10);
             return $products;
         } catch (\Throwable $th) {
+            Log::error($th);
             return response()->json('Failed to load data, Try again later.',500);
         }
     }
@@ -43,7 +46,8 @@ class ProductController extends Controller
             $product->save();
             return 'success';
         } catch (\Throwable $th) {
-            return response()->json('Failed to add product, Try again later.',500);
+            Log::error($th);
+            return response()->json('Failed to add product, Try again later.',400);
         }
     }
     //edit product
@@ -62,7 +66,20 @@ class ProductController extends Controller
             $product->save();
             return 'success';
         } catch (\Throwable $th) {
-            return response()->json('Failed to add product, Try again later.',500);
+            Log::error($th);
+            return response()->json('Failed to update product, Try again later.',400);
+        }
+    }
+    //edit product
+    public function destroy($id)
+    {
+        try {
+            $product = Product::findOrFail($id);
+            $product->delete();
+            return response()->json('success',200);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json('Failed to delete product, Try again later.',400);
         }
     }
 }

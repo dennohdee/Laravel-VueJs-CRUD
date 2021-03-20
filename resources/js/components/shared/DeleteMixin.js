@@ -1,3 +1,5 @@
+import swal from "sweetalert";
+
 export default {
     data() {
       return {
@@ -9,19 +11,32 @@ export default {
         text: '',
         redirect: '',
         busy:false,
+        completed: false,
       }
     },  
     methods: {  
       //method for deleting 
       deleteItem: function deleteItem(path,id){
        
-        var deleteadminpath = '/admin/destroy/';
+        var deleteproduct = '/products/delete/';
+        var deletesupplier = '/suppliers/delete/';
+        var deleteorder = '/orders/delete/';
         var fpath='';
         var item='';
-        if(path == 'deleteadmin')
+        if(path == 'deleteproductpath')
         {
-          fpath=deleteadminpath;
-          item="Administrator"
+          fpath=deleteproduct;
+          item="Product"
+        }
+        else if(path == 'deletesupplierpath')
+        {
+          fpath=deletesupplier;
+          item="Supplier"
+        }
+        else if(path == 'deleteorderpath')
+        {
+          fpath=deleteorder;
+          item="Order"
         }
         
        swal({
@@ -36,13 +51,13 @@ export default {
                 },
                 cancel: {
                   visible: true,
-                  className: 'btn btn-info'
+                  className: 'btn btn-danger'
                 }
               }
             }).then((Delete) => {
               if (Delete) {
             axios.get(fpath +id).then(function (response) {
-                //this.loaded = true;
+                this.completed = true;
                 swal({
                   title: 'Deleted!',
                   icon: 'success',
@@ -54,14 +69,13 @@ export default {
                     }
                   }             
                 }).then(function(){
-                  window.location.href = '';
+                  swal.close();
                 });
               
-            })["catch"](function (error) {
+             }.bind(this)).catch(function (error) {
+              this.loaded = true;
              if (error.response.status === 400)
               {
-              // console.log(error.response);
-              
                 // start fail
                 swal({
                   title: 'Oops!',
@@ -97,7 +111,7 @@ export default {
                 // end fail
               }
               this.loaded = false;
-            });
+            }.bind(this));
           } else {
                 swal.close();
             }

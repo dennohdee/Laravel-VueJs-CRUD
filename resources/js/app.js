@@ -21,6 +21,10 @@ window.Vue = require('vue').default;
 
 Vue.component('product-component', require('./components/products/ProductComponent.vue').default);
 
+Vue.component('supplier-component', require('./components/suppliers/SupplierComponent.vue').default);
+
+Vue.component('order-component', require('./components/orders/OrderComponent.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -28,6 +32,7 @@ Vue.component('product-component', require('./components/products/ProductCompone
  */
 // importing sweet alert for notifications
 import swal from 'sweetalert';
+
 // call pagination component
  Vue.component('pagination', require('laravel-vue-pagination'));
 const app = new Vue({

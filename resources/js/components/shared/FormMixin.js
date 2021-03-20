@@ -10,6 +10,7 @@ export default {
         action2: '', //edit action
         text: '',
         redirect: '',
+        completed: false,
         busyWriting:false,
         
       }
@@ -30,13 +31,10 @@ export default {
             var message = this.text;
           }
           else if(theaction == 'edit') {
-          {
             var action = this.action2;
             var message = this.text2;
-            var fields = this.data;
           }
-          }
-          axios.post(action, fields).then(response => {
+          axios.post(action, this.fields).then(response => {
             // this.fields = {}; //Clear input fields.
             this.loaded = true;
             this.success = true;
@@ -44,6 +42,7 @@ export default {
             //sweet alert with redirect
             var mtext = message;
             var back = this.redirect;
+            this.completed = true;
             swal({
               title: 'Success',
               text: mtext,
@@ -51,8 +50,8 @@ export default {
               type: 'success',
               buttons:{
                 confirm: {
-                  text : 'Go Back',
-                  className : 'btn btn-success'
+                  text : 'Close',
+                  className : 'btn btn-danger'
                 },
                 cancel: {
                   text: 'Add more..',
@@ -62,7 +61,7 @@ export default {
               }
             }).then((Delete) => {
               if (Delete) {
-                window.location.href = back;
+                swal.close();
               } else {
                 swal.close();
               }
