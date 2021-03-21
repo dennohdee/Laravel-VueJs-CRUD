@@ -2,27 +2,27 @@
     <div class="pd-20 card-box mb-30">
         <div class="clearfix mb-20">
             <div class="pull-left">
-                <h4 class="text-blue h4">Orders</h4>
+                <h4 class="text-blue h4">Product for Supplier {{ fields.name }}</h4>
             </div>
             <div class="pull-right">
                 <!-- refresh data button -->
-                <button @click.prevent="getOrders(page = 1)" class="btn btn-sm btn-round btn-outline-info" :disabled="isDisabled">
+                <button @click.prevent="getSupplierProducts(page = 1)" class="btn btn-sm btn-round btn-outline-info" :disabled="isDisabled">
                     <div v-if="busy"><i class="fa fa-refresh fa-spin fa-fw"></i> </div>
                     <div v-else><i class="fa fa-refresh"></i> </div>
                 </button>
                 <!-- export buttons -->
-                <span v-if="orders.total != 0">
-                        <button @click.prevent="getExcel()" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
+                <span v-if="supplierproducts.total != 0">
+                        <!-- <button @click.prevent="" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
                             <div v-if="busy1"><i class="icon-copy fa fa-file-excel-o"></i> <i class="fa fa-refresh fa-spin fa-fw"></i></div>
                             <div v-else><i class="icon-copy fa fa-file-excel-o"></i> Excel</div>
-                        </button>
+                        </button> -->
                 </span>
             </div>
         </div>
         <!-- data table -->
         <div class="table-responsive">
-            <div v-if="orders.total == 0" class="p-3 border border-light text-center">
-                Sorry! No Order has been added yet.
+            <div v-if="supplierproducts.total == 0" class="p-3 border border-light text-center">
+                Sorry! No product has been added yet.
             </div>
             <table v-else class="table table-striped">
                 <thead>
@@ -42,12 +42,11 @@
                 </tfoot>
                 <div v-if="busy" class="text-center">Please wait. Loading...<i class="micon fa fa-refresh fa-spin fa-fw"></i></div>
                 <tbody v-else>
-                    <tr v-for="data in orders.data" :key="data.id">
-                        <td>{{ data.order_number }}</td>
-                        <td>{{ data.orders_order_detail.length }}</td>
+                    <tr v-for="data in supplierproducts.data" :key="data.id">
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.supplierproduct_product.name }}</td>
                         <td>
-                            <a :href="'/order-details/'+data.id+'-'+data.order_number" class="btn btn-sm btn-round btn-outline-* btn-success text-white" title="View Order Details"><i class="icon-copy fa fa-eye"></i></a>
-                            <button @click.prevent="deleteItem('deleteorderpath',data.id)" class="btn btn-sm btn-round btn-outline-* btn-danger" title="Delete"><i class="icon-copy fa fa-trash-o"></i></button>
+                            <button @click.prevent="deleteItem('deletesupplierproductspath',data.id)" class="btn btn-sm btn-round btn-outline-* btn-danger" title="Delete"><i class="icon-copy fa fa-trash-o"></i></button>
                         </td>
                         <!-- edit modal -->
                         <div class="modal fade" :id="'edit'+data.id" tabindex="-1" role="dialog" aria-labelledby="myMediumModalLabel" aria-hidden="true">
@@ -60,9 +59,9 @@
                                     <form method="POST" @submit.prevent="submit('edit')">
                                         <div class="modal-body row">
                                             <div class="form-group col-md-12">
-                                                <label> Order Number</label>
-                                                <input class="form-control" name="order_number" v-model="data.order_number" type="text" placeholder="Enter Order Number" required>
-                                                <div v-if="errors && errors.order_number" class="text-danger">{{ errors.order_number[0] }}</div>
+                                                <label> Product(s)</label>
+                                                <multiselect v-model="fields.product" :options="products" placeholder="Select Product(s)" label="name" track-by="id" :multiple="false" @input="onChange"></multiselect>
+                                                <div v-if="errors && errors.product_id" class="text-danger">{{ errors.product_id[0] }}</div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -81,7 +80,7 @@
                 </tbody>
             </table>
             <!-- data pagination -->
-            <pagination :data="orders" @pagination-change-page="getOrders" :limit=3 align="right">
+            <pagination :data="supplierproducts" @pagination-change-page="getSupplierProducts" :limit=3 align="right">
                 <span slot="prev-nav">&lt; Previous</span>
                 <span slot="next-nav">Next &gt;</span>
             </pagination>
@@ -90,27 +89,29 @@
         
         <!-- add modal -->
         <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myMediumModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-dialog modal-md modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myMediumModalLabel">Create Order</h4>
+                        <h4 class="modal-title" id="myMediumModalLabel">Assign products</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <form method="POST" @submit.prevent="submit('add')">
                         <div class="modal-body row">
                             <div class="form-group col-md-12">
-                                <p> Sure to create an order?</p>
+                                <label> Product(s)</label>
+                                <multiselect v-model="fields.product" :options="products" placeholder="Select Product(s)" label="name" track-by="id" :multiple="true" @input="onChange"></multiselect>
+                                <div v-if="errors && errors.product_id" class="text-danger">{{ errors.product_id[0] }}</div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                            <button type="submit" class="btn btn-success" :disabled="isDisabled">
-                                <div v-if="busyWriting"><i class="fa fa-refresh fa-spin fa-fw"></i> Creating</div>
-                                <div v-else> Yes</div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" :disabled="isDisabled">
+                                <div v-if="busyWriting"><i class="fa fa-refresh fa-spin fa-fw"></i> Saving</div>
+                                <div v-else> Save</div>
                             </button>
                         </div>
                     </form>
-                </div>  
+                </div>
             </div>
         </div>
         <!-- ./end add modal -->
@@ -122,23 +123,30 @@
     import DeleteMixin from '../shared/DeleteMixin';
     export default {
         mixins: [ FormMixin, DeleteMixin ],
+        props: [ 'supplierdetails' ],
         data() {
             return {
-            'action': '/orders/add',
-            'action2': '/orders/update',
-            'text': 'Order added succesfully',
-            'text2': 'Order updated succesfully',
-            orders: [],
+            'action': '/supplier-products/add',
+            'action2': '/supplier-products/update',
+            'text': 'Product added succesfully',
+            'text2': 'Product updated succesfully',
+            supplierproducts: [],
             busy: false,
             busy1: false,
             busyWriting:false,
             showModal: false,
+            products:[],
+            fields: {
+                supplier_id: this.supplierdetails.supplier_id,
+                name: this.supplierdetails.name,
+                product:''
+            }
             }
         },
 
         watch:{
                 completed:	function (value) { 
-                        this.getOrders();
+                        this.getSupplierProducts();
                         this.completed = false;
                     }
             },
@@ -149,33 +157,38 @@
             },
         },
         methods: {
-            getOrders: function(page = 1){
+            getSupplierProducts: function(page = 1){
                 this.busy = true;
-                axios.get('/orders/get?page=' + page)
+                axios.get('/supplier-products/get/'+this.fields.supplier_id+'?page=' + page)
                 .then(function(response){
                     this.busy = false;
-                    this.orders = response.data;
+                    this.supplierproducts = response.data;
                 }.bind(this));
             },
-            getExcel: function(){
-                this.busy1 = true;
-                axios.get('/order-details/export', {responseType: 'arraybuffer'})
+            getProducts: function(){
+                this.busy = true;
+                axios.get('/products/all')
                 .then(function(response){
-                    this.busy1 = false;
-                    let blob = new Blob([response.data], { type: 'text/csv' })
-                    let link = document.createElement('a')
-                    link.href = window.URL.createObjectURL(blob)
-                    link.download = 'Order Details.xlsx'
-                    link.click()
+                    this.busy = false;
+                    this.products = response.data;
                 }.bind(this));
             },
             beforeSubmit: function(order) {
                 this.fields.id = order.id;
-                this.fields.order_number = order.order_number;               
+                this.fields.name = order.name;               
+            },
+            onChange(value) {
+                this.fields.product = value;
             }
         },
+        mounted() {
+            this.fields.supplier_id = this.orderdetails.supplier_id;
+            this.fields.name = this.orderdetails.name;
+        },
         created: function() {
-            this.getOrders()
+            this.getSupplierProducts(),this.getProducts()
         }   
     }
 </script>
+<!--Add Multiselect CSS. Can be added as a static asset or inside a component. -->
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

@@ -12,10 +12,10 @@
                 </button>
                 <!-- export buttons -->
                 <span v-if="suppliers.total != 0">
-                        <button @click.prevent="" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
+                        <!-- <button @click.prevent="" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
                             <div v-if="busy1"><i class="icon-copy fa fa-file-excel-o"></i> <i class="fa fa-refresh fa-spin fa-fw"></i></div>
                             <div v-else><i class="icon-copy fa fa-file-excel-o"></i> Excel</div>
-                        </button>
+                        </button> -->
                 </span>
             </div>
         </div>
@@ -49,6 +49,7 @@
                         <td>{{ data.name }}</td>
                         <td>{{ data.supplier_products.length }}</td>
                         <td>
+                            <a :href="'/supplier-products/'+data.id+'-'+data.name" class="btn btn-sm btn-round btn-outline-* btn-success text-white" title="View supplier products"><i class="icon-copy fa fa-eye"></i></a>
                             <button class="btn btn-sm btn-round btn-outline-* btn-warning" :data-target="'#edit'+data.id" data-toggle="modal" title="Edit"><i class="icon-copy fa fa-edit"></i></button>
                             <button @click.prevent="deleteItem('deletesupplierpath',data.id)" class="btn btn-sm btn-round btn-outline-* btn-danger" title="Delete"><i class="icon-copy fa fa-trash-o"></i></button>
                         </td>
@@ -143,7 +144,10 @@
         },
 
         watch:{
-                completed:	function (value) { this.getSuppliers() }
+                completed:	function (value) { 
+                        this.getSuppliers();
+                        this.completed = false;
+                    }
             },
         
         computed: {

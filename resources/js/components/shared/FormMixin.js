@@ -54,7 +54,7 @@ export default {
                   className : 'btn btn-danger'
                 },
                 cancel: {
-                  text: 'Add more..',
+                  text: 'Continue..',
                   visible: true,
                   className: 'btn btn-info'
                 }

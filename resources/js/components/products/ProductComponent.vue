@@ -12,10 +12,10 @@
                 </button>
                 <!-- export buttons -->
                 <span v-if="products.total != 0">
-                        <button @click.prevent="" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
+                        <!-- <button @click.prevent="" class="btn btn-sm btn-round btn-outline-success" :disabled="isDisabled">
                             <div v-if="busy1"><i class="icon-copy fa fa-file-excel-o"></i> <i class="fa fa-refresh fa-spin fa-fw"></i></div>
                             <div v-else><i class="icon-copy fa fa-file-excel-o"></i> Excel</div>
-                        </button>
+                        </button> -->
                 </span>
             </div>
         </div>
@@ -165,7 +165,10 @@
         },
 
         watch:{
-                completed:	function (value) { this.getProducts() }
+                completed:	function (value) { 
+                        this.getProducts();
+                        this.completed = false; 
+                    }
             },
         
         computed: {

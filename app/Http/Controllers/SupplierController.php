@@ -62,7 +62,7 @@ class SupplierController extends Controller
             return response()->json('Failed to update supplier, Try again later.',400);
         }
     }
-    //edit Supplier
+    //delete Supplier
     public function destroy($id)
     {
         try {

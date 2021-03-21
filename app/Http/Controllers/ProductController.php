@@ -27,7 +27,18 @@ class ProductController extends Controller
             return $products;
         } catch (\Throwable $th) {
             Log::error($th);
-            return response()->json('Failed to load data, Try again later.',500);
+            return response()->json('Failed to load data, Try again later.',400);
+        }
+    }
+    //get all unpaginated products
+    public function getAllProducts()
+    {
+        try {
+            $products = Product::orderByDesc('id')->get();
+            return $products;
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json('Failed to load data, Try again later.',400);
         }
     }
     //add product
@@ -70,7 +81,7 @@ class ProductController extends Controller
             return response()->json('Failed to update product, Try again later.',400);
         }
     }
-    //edit product
+    //delete product
     public function destroy($id)
     {
         try {

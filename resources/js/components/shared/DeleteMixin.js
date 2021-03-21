@@ -21,6 +21,9 @@ export default {
         var deleteproduct = '/products/delete/';
         var deletesupplier = '/suppliers/delete/';
         var deleteorder = '/orders/delete/';
+        var deleteorderdetails = '/order-details/delete/';
+        var deletesupplierproducts = '/supplier-products/delete/';
+
         var fpath='';
         var item='';
         if(path == 'deleteproductpath')
@@ -37,6 +40,16 @@ export default {
         {
           fpath=deleteorder;
           item="Order"
+        }
+        else if(path == 'deleteorderdetspath')
+        {
+          fpath=deleteorderdetails;
+          item="Order Product"
+        }
+        else if(path == 'deletesupplierproductspath')
+        {
+          fpath=deletesupplierproducts;
+          item="Supplier Product";
         }
         
        swal({

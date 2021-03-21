@@ -42,15 +42,13 @@ class OrderController extends Controller
             return response()->json('Failed to load data, Try again later.',500);
         }
     }
+    
     //add Order
     public function addOrder(Request $request)
     {
-        $request->validate([
-            'order_number' => 'required|string|max:45',
-        ]);
         try {
             $order = new Order();
-            $order->order_number = $request->order_number;
+            $order->order_number = str_replace( array("-", ":", " "), '',now());
             $order->save();
             return 'success';
         } catch (\Throwable $th) {
@@ -58,23 +56,7 @@ class OrderController extends Controller
             return response()->json('Failed to add Order, Try again later.',400);
         }
     }
-    //edit Order
-    public function editOrder(Request $request)
-    {
-        $request->validate([
-            'order_number' => 'required|string|max:45',
-        ]);
-        try {
-            $order = Order::findOrFail($request->id);
-            $order->order_number = $request->order_number;
-            $order->save();
-            return 'success';
-        } catch (\Throwable $th) {
-            Log::error($th);
-            return response()->json('Failed to update order, Try again later.',400);
-        }
-    }
-    //edit Order
+    //delete Order
     public function destroy($id)
     {
         try {

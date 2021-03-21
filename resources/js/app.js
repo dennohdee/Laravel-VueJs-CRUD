@@ -23,7 +23,13 @@ Vue.component('product-component', require('./components/products/ProductCompone
 
 Vue.component('supplier-component', require('./components/suppliers/SupplierComponent.vue').default);
 
+Vue.component('supplier-products-component', require('./components/supplierproducts/SupplierProductComponent.vue').default);
+
 Vue.component('order-component', require('./components/orders/OrderComponent.vue').default);
+
+Vue.component('order-details-component', require('./components/orderdetails/OrderDetailComponent.vue').default);
+// ===chart ====//
+Vue.component('main-chart-component', require('./components/charts/ChartContainer.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -32,7 +38,9 @@ Vue.component('order-component', require('./components/orders/OrderComponent.vue
  */
 // importing sweet alert for notifications
 import swal from 'sweetalert';
-
+// register multiselect 
+import Multiselect from 'vue-multiselect'
+Vue.component('multiselect', Multiselect)
 // call pagination component
  Vue.component('pagination', require('laravel-vue-pagination'));
 const app = new Vue({
